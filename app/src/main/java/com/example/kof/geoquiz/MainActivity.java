@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mTrueButton,mFalseButton,mNextButton;
+    private Button mTrueButton,mFalseButton,mNextButton,mPreviousButton;
     private TextView mTextView;
     private int mCurrentIndex = 0;
 
@@ -29,10 +29,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
         mNextButton = (Button) findViewById(R.id.next_button);
+        mPreviousButton = (Button) findViewById(R.id.previous_button);
         mTextView = (TextView) findViewById(R.id.question_text_view);
         mTrueButton.setOnClickListener(this);
         mFalseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
+        mPreviousButton.setOnClickListener(this);
 
         UpdateQuestionText();
     }
@@ -49,6 +51,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.next_button:
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                UpdateQuestionText();
+                break;
+            case R.id.previous_button:
+                mCurrentIndex = mCurrentIndex - 1;
+                if (mCurrentIndex == -1) {
+                    mCurrentIndex = mQuestionBank.length - 1;
+                }
+
                 UpdateQuestionText();
                 break;
             default:
