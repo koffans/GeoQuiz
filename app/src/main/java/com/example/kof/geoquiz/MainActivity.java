@@ -4,12 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mTrueButton,mFalseButton,mNextButton,mPreviousButton;
+    private Button mTrueButton,mFalseButton;
+    private ImageButton mNextButton,mPreviousButton;
     private TextView mTextView;
     private int mCurrentIndex = 0;
 
@@ -28,13 +30,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mTrueButton = (Button) findViewById(R.id.true_button);
         mFalseButton = (Button) findViewById(R.id.false_button);
-        mNextButton = (Button) findViewById(R.id.next_button);
-        mPreviousButton = (Button) findViewById(R.id.previous_button);
+        mNextButton = (ImageButton) findViewById(R.id.next_button);
+        mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
         mTextView = (TextView) findViewById(R.id.question_text_view);
         mTrueButton.setOnClickListener(this);
         mFalseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
         mPreviousButton.setOnClickListener(this);
+        mTextView.setOnClickListener(this);
 
         UpdateQuestionText();
     }
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mCurrentIndex = mQuestionBank.length - 1;
                 }
 
+                UpdateQuestionText();
+                break;
+            case R.id.question_text_view:
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 UpdateQuestionText();
                 break;
             default:

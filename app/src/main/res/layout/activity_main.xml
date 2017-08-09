@@ -44,24 +44,20 @@
         android:orientation="horizontal"
         >
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/previous_button"
-            android:text="@string/previous_button"
-            android:textAllCaps="false"
-            android:drawableLeft="@mipmap/left_arrow"
-            android:drawablePadding="0dp"
+            android:src="@mipmap/left_arrow"
+            android:drawablePadding="4dp"
             />
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/next_button"
-            android:text="@string/next_button"
-            android:textAllCaps="false"
-            android:drawableRight="@mipmap/right_arrow"
-            android:drawablePadding="0dp"
+            android:src="@mipmap/right_arrow"
+            android:drawablePadding="4dp"
             />
     </LinearLayout>
 </LinearLayout>
