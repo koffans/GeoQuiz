@@ -13,10 +13,11 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "index";
 
     private Button mTrueButton,mFalseButton;
     private ImageButton mNextButton,mPreviousButton;
-    private TextView mTextView;
+    private TextView mTextView,mPageTextView;
     private int mCurrentIndex = 0;
 
     private Question[] mQuestionBank = new Question[] {
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
+        }
         Log.d(TAG,"onCreat(Bundle) called!");
         setContentView(R.layout.activity_main);
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
         mTextView = (TextView) findViewById(R.id.question_text_view);
+        mPageTextView = (TextView) findViewById(R.id.page_text_view);
         mTrueButton.setOnClickListener(this);
         mFalseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
@@ -45,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextView.setOnClickListener(this);
 
         UpdateQuestionText();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i(TAG,"onSaveInstanceState");
+        outState.putInt(KEY_INDEX,mCurrentIndex);
     }
 
     @Override
@@ -124,5 +136,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void UpdateQuestionText() {
         int QuestionId = mQuestionBank[mCurrentIndex].getTextResId();
         mTextView.setText(QuestionId);
+        mPageTextView.setText(String.format("%s / %s",mCurrentIndex+1,mQuestionBank.length));
     }
 }
