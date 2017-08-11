@@ -1,5 +1,6 @@
 package com.example.kof.geoquiz;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
-    private Button mTrueButton,mFalseButton;
+    private Button mTrueButton,mFalseButton,mCheatButton;
     private ImageButton mNextButton,mPreviousButton;
     private TextView mTextView,mPageTextView;
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_oceans,true),
@@ -41,12 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFalseButton = (Button) findViewById(R.id.false_button);
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mPreviousButton = (ImageButton) findViewById(R.id.previous_button);
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
         mTextView = (TextView) findViewById(R.id.question_text_view);
         mPageTextView = (TextView) findViewById(R.id.page_text_view);
         mTrueButton.setOnClickListener(this);
         mFalseButton.setOnClickListener(this);
         mNextButton.setOnClickListener(this);
         mPreviousButton.setOnClickListener(this);
+        mCheatButton.setOnClickListener(this);
         mTextView.setOnClickListener(this);
 
         UpdateQuestionText();
@@ -100,10 +105,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 CheckAnswer(false);
                 break;
             case R.id.next_button:
+                mIsCheater = false;
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 UpdateQuestionText();
                 break;
             case R.id.previous_button:
+                mIsCheater = false;
                 mCurrentIndex = mCurrentIndex - 1;
                 if (mCurrentIndex == -1) {
                     mCurrentIndex = mQuestionBank.length - 1;
@@ -115,22 +122,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 UpdateQuestionText();
                 break;
+            case  R.id.cheat_button:
+                boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+                Intent i = CheatActivity.newIntent(MainActivity.this,answerIsTrue);
+//                startActivity(i);
+                startActivityForResult(i,REQUEST_CODE_CHEAT);
+                break;
             default:
                 break;
         }
     }
 
-    private void CheckAnswer(boolean AnswerValue)
-    {
-        int MessageResId;
-        if (mQuestionBank[mCurrentIndex].isAnswerTrue() == AnswerValue){
-            MessageResId = R.string.correct_toast;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+
+        switch (requestCode){
+            case REQUEST_CODE_CHEAT:
+                if (data == null) return;
+                mIsCheater = CheatActivity.wasAnswerShown(data);
+                break;
+            default:
+                break;
         }
-        else {
-            MessageResId = R.string.incorrect_toast;
+    }
+
+    private void CheckAnswer(boolean AnswerValue) {
+        int MessageResId;
+
+        if (mIsCheater) {
+            MessageResId = R.string.judgement_toast;
+        } else {
+            if (mQuestionBank[mCurrentIndex].isAnswerTrue() == AnswerValue) {
+                MessageResId = R.string.correct_toast;
+            } else {
+                MessageResId = R.string.incorrect_toast;
+            }
         }
 
-        Toast.makeText(this,MessageResId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, MessageResId, Toast.LENGTH_SHORT).show();
     }
 
     private void UpdateQuestionText() {
