@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
+    private static final String CHEAT_INDEX = "cheat_index";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton,mFalseButton,mCheatButton;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTextView,mPageTextView;
     private int mCurrentIndex = 0;
     private boolean mIsCheater;
+    private boolean mIsVisible;
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_oceans,true),
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
+            mIsCheater = savedInstanceState.getBoolean(CHEAT_INDEX);
         }
         Log.d(TAG,"onCreat(Bundle) called!");
         setContentView(R.layout.activity_main);
@@ -57,11 +60,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UpdateQuestionText();
     }
 
+    private void SetEnableVisible(boolean isVisible) {
+        if (isVisible){
+            mNextButton.setVisibility(View.VISIBLE);
+            mPreviousButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mNextButton.setVisibility(View.INVISIBLE);
+            mPreviousButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.i(TAG,"onSaveInstanceState");
         outState.putInt(KEY_INDEX,mCurrentIndex);
+        outState.putBoolean(CHEAT_INDEX,mIsCheater);
     }
 
     @Override
