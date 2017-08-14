@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
     private static final String CHEAT_INDEX = "cheat_index";
+    private static final String VISIBLE_INDEX = "visible_index";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton,mFalseButton,mCheatButton;
@@ -36,10 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
-            mIsCheater = savedInstanceState.getBoolean(CHEAT_INDEX);
-        }
         Log.d(TAG,"onCreat(Bundle) called!");
         setContentView(R.layout.activity_main);
 
@@ -57,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCheatButton.setOnClickListener(this);
         mTextView.setOnClickListener(this);
 
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
+            mIsCheater = savedInstanceState.getBoolean(CHEAT_INDEX);
+            mIsVisible = savedInstanceState.getBoolean(VISIBLE_INDEX);
+        }
+        SetEnableVisible(mIsVisible);
         UpdateQuestionText();
     }
 
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i(TAG,"onSaveInstanceState");
         outState.putInt(KEY_INDEX,mCurrentIndex);
         outState.putBoolean(CHEAT_INDEX,mIsCheater);
+        outState.putBoolean(VISIBLE_INDEX,mIsVisible);
     }
 
     @Override
@@ -176,11 +180,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         Toast.makeText(this, MessageResId, Toast.LENGTH_SHORT).show();
+        mIsVisible = true;
+        SetEnableVisible(mIsVisible);
     }
 
     private void UpdateQuestionText() {
         int QuestionId = mQuestionBank[mCurrentIndex].getTextResId();
         mTextView.setText(QuestionId);
         mPageTextView.setText(String.format("%s / %s",mCurrentIndex+1,mQuestionBank.length));
+
+        mIsVisible = false;
+        SetEnableVisible(mIsVisible);
     }
 }
