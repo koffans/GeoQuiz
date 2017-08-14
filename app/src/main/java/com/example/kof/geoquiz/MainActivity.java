@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mIsVisible = savedInstanceState.getBoolean(VISIBLE_INDEX);
         }
         SetEnableVisible(mIsVisible);
-        UpdateQuestionText();
+        UpdateQuestionTextAtStart();
     }
 
     private void SetEnableVisible(boolean isVisible) {
@@ -190,6 +190,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPageTextView.setText(String.format("%s / %s",mCurrentIndex+1,mQuestionBank.length));
 
         mIsVisible = false;
+        SetEnableVisible(mIsVisible);
+    }
+
+    private void UpdateQuestionTextAtStart() {
+        int QuestionId = mQuestionBank[mCurrentIndex].getTextResId();
+        mTextView.setText(QuestionId);
+        mPageTextView.setText(String.format("%s / %s",mCurrentIndex+1,mQuestionBank.length));
+
         SetEnableVisible(mIsVisible);
     }
 }
